@@ -1,6 +1,6 @@
 export default function TodoList({ $target, initialState, onDrop, onRemove }) {
   const $todoList = document.createElement("div");
-  $todoList.setAttribute("droggable", "true");
+  $todoList.setAttribute("droppable", "true");
   $target.appendChild($todoList);
 
   this.state = initialState;
