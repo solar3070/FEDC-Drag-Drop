@@ -3,7 +3,6 @@ export default function TaskQueue() {
 
   this.addTask = (task) => {
     tasks.push(task);
-    console.log(tasks);
   };
 
   this.run = async () => {
