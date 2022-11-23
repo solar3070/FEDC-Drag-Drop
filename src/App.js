@@ -1,7 +1,10 @@
 import { request } from "./api.js";
 import TodoList from "./TodoList.js";
+import TaskQueue from "./TaskQueue.js";
 
 export default function App({ $target }) {
+  const tasks = new TaskQueue();
+
   this.state = {
     todos: [],
   };
@@ -22,11 +25,11 @@ export default function App({ $target }) {
         todos: nextTodos,
       });
 
-      await request(`/${todoId}/toggle`, {
-        method: "PUT",
+      tasks.addTask(async () => {
+        await request(`/${todoId}/toggle`, {
+          method: "PUT",
+        });
       });
-
-      await fetchTodos();
     },
   });
 
@@ -39,18 +42,18 @@ export default function App({ $target }) {
     onDrop: async (todoId) => {
       const nextTodos = [...this.state.todos];
       const todoIndex = nextTodos.findIndex((todo) => todo._id === todoId);
-      
+
       nextTodos[todoIndex].isCompleted = true;
       this.setState({
         ...this.state,
         todos: nextTodos,
       });
 
-      await request(`/${todoId}/toggle`, {
-        method: "PUT",
+      tasks.addTask(async () => {
+        await request(`/${todoId}/toggle`, {
+          method: "PUT",
+        });
       });
-
-      await fetchTodos();
     },
   });
 
@@ -80,4 +83,11 @@ export default function App({ $target }) {
   };
 
   fetchTodos();
+
+  const $button = document.createElement("button");
+  $button.textContent = "변경내용 동기화";
+  
+  $target.appendChild($button);
+
+  $button.addEventListener("click", () => tasks.run());
 }
